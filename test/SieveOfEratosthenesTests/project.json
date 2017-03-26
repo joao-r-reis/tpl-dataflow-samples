@@ -1,0 +1,28 @@
+{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "dotnet-test-mstest": "1.1.2-preview",
+    "MSTest.TestFramework": "1.1.13",
+    "SieveOfEratosthenes": {
+      "target": "project"
+    }
+  },
+
+  "testRunner": "mstest",
+
+  "frameworks": {
+    "netcoreapp1.1": {
+      "imports": [
+        "portable-net45+win8+wp8+wpa81",
+        "dotnet5.4"
+      ],
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.1.1"
+        }
+      }
+    }
+  }
+}
