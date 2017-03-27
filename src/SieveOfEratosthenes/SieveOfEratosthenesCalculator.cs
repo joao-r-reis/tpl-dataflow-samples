@@ -8,7 +8,9 @@
     {
         public enum AlgorithmVersion
         {
-            Base
+            Base,
+            Parallel,
+            Segmented
         }
 
         private readonly IDictionary<AlgorithmVersion, ISieveOfEratosthenesStrategy> strategies;
@@ -17,7 +19,9 @@
         {
             this.strategies = new Dictionary<AlgorithmVersion, ISieveOfEratosthenesStrategy>
             {
-                { AlgorithmVersion.Base, new BaseSieveOfEratosthenesStrategy() }
+                { AlgorithmVersion.Base, new BaseSieveOfEratosthenesStrategy() },
+                { AlgorithmVersion.Parallel, new ParallelSieveOfEratosthenesStrategy() },
+                { AlgorithmVersion.Segmented, new SegmentedSieveOfEratosthenesStrategy() }
             };
         }
 

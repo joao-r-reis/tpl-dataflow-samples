@@ -10,7 +10,7 @@
             var result = new bool[(long) (n / 2.0 + 0.5)];
             var maxI = (long) Math.Sqrt(n);
 
-            for (long i = 3; i <= maxI; i = i + 2)
+            for (int i = 3; i <= maxI; i = i + 2)
             {
                 if (!result[i/2])
                 {
