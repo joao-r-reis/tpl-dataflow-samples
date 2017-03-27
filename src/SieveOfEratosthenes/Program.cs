@@ -16,19 +16,19 @@
 
             var calculator = new SieveOfErasthotenesCalculator();
             
-            calculator.ComputePrimeNumbers(SieveOfErasthotenesCalculator.AlgorithmVersion.Base, (long)Math.Pow(2, 31));
+            calculator.ComputePrimeNumbers(SieveOfErasthotenesCalculator.AlgorithmVersion.Base, (long)Math.Pow(2, 30));
 
             Console.WriteLine("Parallel Algorithm...");
 
             calculator = new SieveOfErasthotenesCalculator();
 
-            calculator.ComputePrimeNumbers(SieveOfErasthotenesCalculator.AlgorithmVersion.Parallel, (long)Math.Pow(2, 31));
+            calculator.ComputePrimeNumbers(SieveOfErasthotenesCalculator.AlgorithmVersion.Parallel, (long)Math.Pow(2, 30));
 
             Console.WriteLine("Segmented Algorithm...");
 
             calculator = new SieveOfErasthotenesCalculator();
 
-            calculator.ComputePrimeNumbers(SieveOfErasthotenesCalculator.AlgorithmVersion.Segmented, (long)Math.Pow(2, 31));
+            calculator.ComputePrimeNumbers(SieveOfErasthotenesCalculator.AlgorithmVersion.Segmented, (long)Math.Pow(2, 30));
 
             calculator = null;
 
