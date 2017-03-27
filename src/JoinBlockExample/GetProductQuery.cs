@@ -2,18 +2,18 @@
 
 namespace JoinBlockExample
 {
-    public class GetProductCommand
+    public class GetProductQuery
     {
-        public ProductCommandResult Result { get; private set; }
+        public ProductQueryResult Result { get; private set; }
 
         public int ProductId { get; private set; }
 
-        public GetProductCommand(int id)
+        public GetProductQuery(int id)
         {
             this.ProductId = id;
         }
 
-        public void SetResult(ProductCommandResult result)
+        public void SetResult(ProductQueryResult result)
         {
             this.Result = result;
         }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace JoinBlockExample
 {
-    public class ProductCommandResult
+    public class ProductQueryResult
     {
         public List<Store> Stores { get; set; }
 

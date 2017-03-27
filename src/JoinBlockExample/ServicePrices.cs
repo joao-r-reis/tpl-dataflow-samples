@@ -11,7 +11,7 @@ namespace JoinBlockExample
         {
             var rand = new Random();
 
-            await Task.Delay(rand.Next(50, 200)).ConfigureAwait(false);
+            await Task.Delay(rand.Next(90, 110)).ConfigureAwait(false);
             
             return rand.NextDouble() * rand.Next();
         }

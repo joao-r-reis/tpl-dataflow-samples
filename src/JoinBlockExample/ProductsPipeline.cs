@@ -8,33 +8,33 @@ namespace JoinBlockExample
 {
     public class ProductsPipeline
     {
-        private readonly ITargetBlock<GetProductCommand> firstBlock;
+        private readonly ITargetBlock<GetProductQuery> firstBlock;
         private readonly IDataflowBlock finalBlock;
 
         public ProductsPipeline()
         {
-            var firstBlock = new BufferBlock<GetProductCommand>(
+            var firstBlock = new BufferBlock<GetProductQuery>(
             new ExecutionDataflowBlockOptions
             {
                 MaxDegreeOfParallelism = 20,
                 SingleProducerConstrained = true
             });
 
-            var storeBlock = new TransformBlock<GetProductCommand, List<Store>>(
+            var storeBlock = new TransformBlock<GetProductQuery, List<Store>>(
                 cmd => new ServiceStores().GetStoresByProductId(cmd.ProductId),
                 new ExecutionDataflowBlockOptions
                 {
                     MaxDegreeOfParallelism = 20
                 });
 
-            var priceBlock = new TransformBlock<GetProductCommand, double>(
+            var priceBlock = new TransformBlock<GetProductQuery, double>(
                 cmd => new ServicePrices().GetPriceByProductId(cmd.ProductId),
                 new ExecutionDataflowBlockOptions
                 {
                     MaxDegreeOfParallelism = 20
                 });
 
-            var productBlock = new TransformBlock<GetProductCommand, Product>(
+            var productBlock = new TransformBlock<GetProductQuery, Product>(
                 cmd => new ServiceProducts().GetProductAsync(cmd.ProductId),
                 new ExecutionDataflowBlockOptions
                 {
@@ -46,14 +46,14 @@ namespace JoinBlockExample
                 Greedy = false
             });
 
-            var finalJoinBlock = new JoinBlock<Tuple<Product, List<Store>, double>, GetProductCommand>(new GroupingDataflowBlockOptions
+            var finalJoinBlock = new JoinBlock<Tuple<Product, List<Store>, double>, GetProductQuery>(new GroupingDataflowBlockOptions
             {
                 Greedy = false
             });
 
-            var finalBlock = new ActionBlock<Tuple<Tuple<Product, List<Store>, double>, GetProductCommand>>(tuple =>
+            var finalBlock = new ActionBlock<Tuple<Tuple<Product, List<Store>, double>, GetProductQuery>>(tuple =>
                 {
-                    tuple.Item2.SetResult(new ProductCommandResult
+                    tuple.Item2.SetResult(new ProductQueryResult
                     {
                         Product = tuple.Item1.Item1,
                         Stores = tuple.Item1.Item2,
@@ -71,24 +71,27 @@ namespace JoinBlockExample
             firstBlock.LinkTo(productBlock, new DataflowLinkOptions { PropagateCompletion = true });
             firstBlock.LinkTo(priceBlock, new DataflowLinkOptions { PropagateCompletion = true });
             firstBlock.LinkTo(finalJoinBlock.Target2, new DataflowLinkOptions { PropagateCompletion = false });
+
             productBlock.LinkTo(joinBlock.Target1, new DataflowLinkOptions { PropagateCompletion = true });
             storeBlock.LinkTo(joinBlock.Target2, new DataflowLinkOptions { PropagateCompletion = true });
             priceBlock.LinkTo(joinBlock.Target3, new DataflowLinkOptions { PropagateCompletion = true });
+
             joinBlock.LinkTo(finalJoinBlock.Target1, new DataflowLinkOptions {PropagateCompletion = true});
+
             finalJoinBlock.LinkTo(finalBlock, new DataflowLinkOptions {PropagateCompletion = true});
 
             this.finalBlock = finalBlock;
             this.firstBlock = firstBlock;
         }
 
-        public async Task<List<ProductCommandResult>> GetProducts(int numberOfProducts)
+        public async Task<List<ProductQueryResult>> GetProducts(int numberOfProducts)
         {
             var rand = new Random();
-            var cmds = new List<GetProductCommand>();
+            var cmds = new List<GetProductQuery>();
             for (var i = 0; i < numberOfProducts; i++)
             {
                 var id = rand.Next();
-                var cmd = new GetProductCommand(id);
+                var cmd = new GetProductQuery(id);
                 cmds.Add(cmd);
                 //Console.WriteLine("Sending command product id {0}.", i, id);
                 await this.firstBlock.SendAsync(cmd).ConfigureAwait(false);
